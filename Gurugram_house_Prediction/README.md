@@ -32,3 +32,31 @@ This project aims to predict **real estate prices** based on various property fe
 ---
 
 ## 📌 Project Structure  ....
+House Price Prediction Using Machine Learning
+Objective:
+
+To build a machine learning model that accurately predicts house prices based on various features such as location, size, and other property attributes.
+
+Key Steps:
+
+Data Preprocessing & Cleaning:
+Handled missing values, outliers, and categorical variables.
+Scaled and transformed data for better model performance.
+Model Selection & Comparison:
+Implemented multiple models:
+Linear Regression
+Lasso Regression
+Ridge Regression
+Decision Tree
+Random Forest
+Compared models using R² score and Mean Squared Error (MSE).
+Random Forest performed best with the highest R² score and lowest MSE.
+Model Tuning & Deployment:
+Tuned hyperparameters of the Random Forest model to improve accuracy.
+Saved the trained model as a .pkl file.
+Built a Streamlit web app (app.py) to provide an interactive interface for users to predict house prices.
+Outcome & Learning:
+
+Gained hands-on experience in machine learning, model evaluation, and deployment.
+Successfully created a user-friendly web app for real-time house price prediction.
+

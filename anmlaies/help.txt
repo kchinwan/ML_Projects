@@ -1,0 +1,2 @@
+Anomalies Predection an detection
+Objective: To build a real‑time anomaly detection and short‑term forecasting system that continuously monitors 5 key performance metrics (CPU usage, memory usage, disk usage %, read ops, write ops) across 7 servers, aggregates disk‑level data per host, detects abnormal behavior patterns as they occur, predicts potential anomalies up to 10 minutes in advance, and triggers timely alerts so the operations team can take preventive action before service degradation or outages occur.

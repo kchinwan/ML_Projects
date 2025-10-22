@@ -1,1 +1,81 @@
-test
+GRU-Based Server Metrics Forecasting – Project Update
+1. Work Completed
+
+Implemented GRU models for predicting server metrics:
+
+CPU Usage %, Memory Usage %, Disk Usage %, Read Ops, Write Ops.
+
+Preprocessed data:
+
+Sorted timestamps, added time features (hour, day of week).
+
+Applied MinMax scaling to metric values.
+
+Created sequences for time-series prediction (sequence length = 60, horizon = 5 min).
+
+Trained models with PyTorch:
+
+2-layer GRU, 128 hidden units, dropout 0.2, 40 epochs.
+
+Separate model and scaler saved per metric for deployment.
+
+Evaluated models:
+
+Disk Usage %: Excellent fit (R² ~0.97).
+
+Memory Usage %: Good fit (R² ~0.79).
+
+CPU Usage %: Moderate fit (R² ~0.28).
+
+Read & Write Ops: Low R²; volatile metrics are challenging to model.
+
+Generated plots of predicted vs actual for visual validation.
+
+Saved trained models and scalers for real-time predictions.
+
+2. Planned Next Steps
+
+Feature Enhancements
+
+Add lag features, rolling averages, and standard deviation for better modeling of Read/Write Ops.
+
+One-hot encode categorical features like day of week for improved learning.
+
+Model Improvements
+
+Experiment with multi-step GRU prediction or recursive prediction for 5-minute horizon.
+
+Explore HuberLoss to reduce sensitivity to outliers.
+
+Tune GRU hyperparameters (hidden units, layers, learning rate).
+
+Optionally, experiment with LSTM or GRU + attention for better capture of spikes.
+
+Deployment / Real-Time Prediction
+
+Use saved GRU models to predict next 5-minute metrics in real-time.
+
+Implement pipeline to fetch latest server data, scale it, predict, and inverse-transform.
+
+3. Current Hurdles / Challenges
+
+Volatile Metrics: Read/Write Ops are highly irregular, resulting in low R².
+
+Multi-step prediction: Current model predicts only the last step; forecasting all 5 minutes requires recursive or multi-output modeling.
+
+Feature limitations: Current features (metric value, hour, day of week) may be insufficient for volatile metrics.
+
+Data scale: Limited historical data may be restricting the model’s ability to generalize.
+
+4. Action Plan to Address Challenges
+
+Implement lag-based and rolling features to improve Read/Write Ops predictions.
+
+Explore multi-step GRU/LSTM models or recursive prediction pipelines.
+
+Experiment with loss functions and hyperparameter tuning to improve R².
+
+Collect and integrate more historical server data if available for better training.
+
+Summary:
+The GRU models are performing well for stable metrics (Disk, Memory, CPU), while volatile metrics (Read/Write Ops) require additional feature engineering and model improvements. Next steps focus on improving accuracy, multi-step forecasting, and deploying real-time predictions.

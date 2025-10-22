@@ -1,0 +1,101 @@
+1. Read Ops
+
+Observation:
+
+GRU R²: ~-0.014 → worse than predicting the mean.
+
+RMSE & MAE are low in absolute terms, but variance patterns aren’t captured.
+
+Challenges:
+
+High volatility: Read operations can spike or drop unpredictably due to:
+
+Sudden user activity
+
+Batch jobs or system processes
+
+Network latency or caching
+
+Sparse patterns: Some time windows may have zero or near-zero reads, making it hard for the GRU to learn meaningful temporal patterns.
+
+Limited features: Currently using only [metric, hour, dayofweek].
+
+External factors affecting Read Ops (e.g., server workload, connected services) are not included.
+
+Short sequence window: SEQ_LEN=60 may not capture patterns that repeat over longer periods.
+
+Target scale: Small variations in Read Ops may be drowned by the scale of other features when MinMax scaling is applied across all features.
+
+Potential Solutions:
+
+Add lag features (1-step, 3-step, 5-step) to give the model context of previous activity.
+
+Include rolling mean, rolling std, or cumulative counts.
+
+Consider log transformation if the distribution is highly skewed.
+
+Optionally, use a smaller MinMax scale per metric to avoid distortion.
+
+2. Write Ops
+
+Observation:
+
+GRU R²: ~0.01 → model barely learns anything.
+
+Large RMSE (~60) and MAE (~30) indicate wide error range.
+
+Challenges:
+
+Irregular spikes: Writes often happen in bursts (e.g., backups, batch jobs, logs flush), creating non-continuous patterns.
+
+Noise and outliers: Sudden spikes can dominate MSE, making the model focus on extremes instead of general trends.
+
+Limited features: Hour and dayofweek alone don’t capture workload scheduling, application-level triggers, or DB transactions.
+
+Sequence horizon: SEQ_LEN=60 may not be enough to capture patterns in bursty writes.
+
+Predictive difficulty: High variability makes GRU’s memory less effective for predicting next steps.
+
+Potential Solutions:
+
+Add engineered features: previous write counts, rolling averages, max/min in window.
+
+Use Huber loss or MAE loss to reduce sensitivity to spikes/outliers.
+
+Increase sequence length to capture broader trends.
+
+Explore attention-based GRU/LSTM to focus on important time steps.
+
+3. CPU Usage %
+
+Observation:
+
+GRU R²: ~0.28 → underfitting; errors visible but smaller than Read/Write Ops.
+
+RMSE & MAE moderate; predictable trends partially captured.
+
+Challenges:
+
+Slow-varying trends: CPU usage often changes gradually but has occasional spikes due to heavy tasks.
+
+Missing context: Only using hour/dayofweek + metric value may miss server-level features:
+
+Active processes
+
+Memory/Disk usage correlations
+
+Background tasks
+
+Feature scaling: MinMax scaling across [CPU, hour, dayofweek] may reduce model sensitivity to small spikes.
+
+Sequence limitations: SEQ_LEN=60 may not fully capture recurring patterns (daily/weekly cycles).
+
+Potential Solutions:
+
+Include memory/disk usage or other correlated metrics as features.
+
+Add lag features or rolling averages for CPU spikes.
+
+Increase SEQ_LEN to capture longer cycles (e.g., 120 or 180 time steps).
+
+Optionally, use multi-feature GRU that predicts multiple metrics jointly.
